@@ -33,10 +33,17 @@ bot.on('messageCreate', (m) => {
     }
 })
 bot.on('messageReactionAdd', async (reaction) => {
-    if (reaction.count === 2) {
+    if (reaction.message.author.id === user.id) {
+        try {
+          await reaction.users.remove(user.id);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    if (reaction.count === required) {
         const channel = bot.channels.cache.get('1316666077949988864');
         if (!channel) {
-            console.error("Channel not found!");
+            console.error("channel not found!");
             return;
         }
 
@@ -56,7 +63,7 @@ bot.on('messageReactionAdd', async (reaction) => {
         embed.setTimestamp();
 
         channel.send({ 
-            content: `:star: **${reaction.count} | [Jump!](${reaction.message.url})**`,
+            content: `:star: **${reaction.count} // [Jump!](${reaction.message.url})**`,
             embeds: [embed] 
         });
     } else if (reaction.count > required) {
@@ -65,7 +72,7 @@ bot.on('messageReactionAdd', async (reaction) => {
         for (const msg of messages.values()) {
             for (const embed of msg.embeds) {
                 if (embed.image && embed.image.url == reaction.message.attachments.first().url) {
-                    await msg.edit({ content: `:star: **${reaction.count} | [Jump!](${reaction.message.url})**`});
+                    await msg.edit({ content: `:star: **${reaction.count} // [Jump!](${reaction.message.url})**`});
                     break;
                 }
             }
@@ -74,14 +81,14 @@ bot.on('messageReactionAdd', async (reaction) => {
 });
 
 bot.on('messageReactionRemove', async (reaction) => {
-    console.log("work")
+    if (reaction.emoji.name != "star") return;
     if (reaction.count > required) {
         const messages = await bot.channels.cache.get('1316666077949988864').messages.fetch({ limit: 50 });
     
             for (const msg of messages.values()) {
                 for (const embed of msg.embeds) {
                     if (embed.image && embed.image.url == reaction.message.attachments.first().url) {
-                        await msg.edit({ content: `:star: **${reaction.count} | [Jump!](${reaction.message.url})**`});
+                        await msg.edit({ content: `:star: **${reaction.count} // [Jump!](${reaction.message.url})**`});
                         break;
                     }
                 }
