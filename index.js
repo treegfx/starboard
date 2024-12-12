@@ -32,14 +32,15 @@ bot.on('messageCreate', (m) => {
         }
     }
 })
-bot.on('messageReactionAdd', async (reaction) => {
-    if (reaction.message.author.id === user.id) {
+bot.on('messageReactionAdd', async (reaction, user) => {
+    if (reaction.emoji.name != "⭐") return;
+    /*if (reaction.message.author.id === user.id) {
         try {
           await reaction.users.remove(user.id);
         } catch (error) {
           console.error(error);
         }
-      }
+    }*/
     if (reaction.count === required) {
         const channel = bot.channels.cache.get('1316666077949988864');
         if (!channel) {
@@ -81,7 +82,7 @@ bot.on('messageReactionAdd', async (reaction) => {
 });
 
 bot.on('messageReactionRemove', async (reaction) => {
-    if (reaction.emoji.name != "star") return;
+    if (reaction.emoji.name != "⭐") return;
     if (reaction.count > required) {
         const messages = await bot.channels.cache.get('1316666077949988864').messages.fetch({ limit: 50 });
     
